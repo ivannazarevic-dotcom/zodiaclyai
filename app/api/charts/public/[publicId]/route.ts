@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import prisma from '@/lib/db/prisma'
+import { prisma } from '@/lib/db/prisma'
 
 // GET /api/charts/public/[publicId] - View public chart (no auth required)
 export async function GET(
