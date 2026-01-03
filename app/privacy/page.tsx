@@ -134,8 +134,8 @@ export default async function PrivacyPolicyPage() {
               </ul>
               <p className="mt-4">
                 To exercise these rights, please contact us at{' '}
-                <a href="mailto:privacy@zodiacly.com" className="text-cosmic-primary hover:underline">
-                  privacy@zodiacly.com
+                <a href="mailto:privacy@zodiacly.online" className="text-cosmic-primary hover:underline">
+                  privacy@zodiacly.online
                 </a>
               </p>
             </section>
@@ -194,8 +194,8 @@ export default async function PrivacyPolicyPage() {
               <h2 className="text-2xl font-bold text-white mb-4">12. Contact Us</h2>
               <p>If you have questions about this Privacy Policy, please contact us:</p>
               <ul className="list-none space-y-2 mt-4">
-                <li>Email: <a href="mailto:privacy@zodiacly.com" className="text-cosmic-primary hover:underline">privacy@zodiacly.com</a></li>
-                <li>Contact Form: <Link href="/contact" className="text-cosmic-primary hover:underline">zodiacly.com/contact</Link></li>
+                <li>Email: <a href="mailto:privacy@zodiacly.online" className="text-cosmic-primary hover:underline">privacy@zodiacly.online</a></li>
+                <li>Contact Form: <Link href="/contact" className="text-cosmic-primary hover:underline">zodiacly.online/contact</Link></li>
               </ul>
             </section>
           </div>
