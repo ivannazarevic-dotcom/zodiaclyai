@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Zodiacly - AI Natal Chart Intelligence Platform",
   description: "Discover your cosmic blueprint with AI-powered natal chart analysis",
   keywords: ["astrology", "natal chart", "AI", "horoscope", "zodiac"],
+  icons: {
+    icon: '/icon.svg',
+  },
 };
 
 export default function RootLayout({
