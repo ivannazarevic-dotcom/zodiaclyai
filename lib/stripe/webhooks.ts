@@ -55,6 +55,68 @@ export async function handleCheckoutSessionCompleted(
   }
 }
 
+export async function handleSubscriptionCreated(
+  subscription: Stripe.Subscription
+) {
+  console.log('[Webhook] customer.subscription.created received')
+  console.log('[Webhook] Subscription ID:', subscription.id)
+  console.log('[Webhook] Customer ID:', subscription.customer)
+  console.log('[Webhook] Status:', subscription.status)
+  console.log('[Webhook] Metadata:', JSON.stringify(subscription.metadata))
+
+  const customerId = subscription.customer as string
+  
+  // Try to find user by customer ID
+  let user = await prisma.user.findUnique({
+    where: { stripeCustomerId: customerId },
+  })
+
+  // If user not found by customer ID, try to find by subscription ID
+  if (!user) {
+    console.log('[Webhook] User not found by customer ID, searching by subscription ID...')
+    user = await prisma.user.findUnique({
+      where: { stripeSubscriptionId: subscription.id },
+    })
+  }
+
+  if (!user) {
+    console.error('[Webhook] ❌ ERROR: No user found for customer:', customerId)
+    console.error('[Webhook] This subscription.created event cannot be processed without a user')
+    return // Don't throw - this might be called before checkout.session.completed
+  }
+
+  console.log('[Webhook] Found user:', user.id, user.email)
+  console.log('[Webhook] Current plan:', user.plan)
+
+  // Only upgrade if not already PRO
+  if (user.plan !== 'PRO' && subscription.status === 'active') {
+    console.log('[Webhook] Upgrading user to PRO via subscription.created')
+    
+    try {
+      const updatedUser = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          plan: 'PRO',
+          stripeSubscriptionId: subscription.id,
+          subscriptionStatus: 'ACTIVE',
+        },
+      })
+
+      console.log('[Webhook] ✅ SUCCESS! User upgraded to PRO via subscription.created:', {
+        userId: updatedUser.id,
+        email: updatedUser.email,
+        plan: updatedUser.plan,
+        subscriptionStatus: updatedUser.subscriptionStatus,
+      })
+    } catch (error: any) {
+      console.error('[Webhook] ❌ ERROR updating user:', error)
+      throw error
+    }
+  } else {
+    console.log('[Webhook] User already on PRO plan or subscription not active, skipping upgrade')
+  }
+}
+
 export async function handleSubscriptionUpdated(
   subscription: Stripe.Subscription
 ) {
