@@ -16,7 +16,30 @@ export async function createCheckoutSession(
 
   let customerId = user?.stripeCustomerId
 
-  // Create a new customer if one doesn't exist
+  // Create a new customer if one doesn't exist OR if the existing customer is invalid
+  // (e.g., test mode customer when using live keys)
+  if (customerId) {
+    try {
+      // Verify the customer exists in current Stripe environment
+      await stripe.customers.retrieve(customerId)
+    } catch (error: any) {
+      // Customer doesn't exist (likely test mode customer with live keys)
+      // Reset customer ID to create a new one
+      console.log(`Customer ${customerId} not found in current Stripe environment. Creating new customer.`)
+      customerId = null
+      
+      // Clear the invalid customer ID from database
+      await prisma.user.update({
+        where: { id: userId },
+        data: { 
+          stripeCustomerId: null,
+          stripeSubscriptionId: null,
+          subscriptionStatus: null
+        },
+      })
+    }
+  }
+
   if (!customerId) {
     const customer = await stripe.customers.create({
       email,
