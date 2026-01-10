@@ -1,4 +1,4 @@
-import { openai } from './client'
+import { openai, ensureOpenAIConfigured } from './client'
 import { ChartData, AIReading, PlanetPosition } from '@/types'
 
 export async function generateChartInterpretation(
@@ -15,6 +15,8 @@ export async function generateChartInterpretation(
 }
 
 async function generateFreeSummary(chartData: ChartData): Promise<AIReading> {
+  ensureOpenAIConfigured()
+
   const sun = chartData.planets.find((p) => p.name === 'Sun')
   const moon = chartData.planets.find((p) => p.name === 'Moon')
   const ascendant = chartData.ascendant
@@ -66,6 +68,8 @@ async function generateProReading(chartData: ChartData): Promise<AIReading> {
 }
 
 async function generateOverview(chartData: ChartData): Promise<string> {
+  ensureOpenAIConfigured()
+
   const sun = chartData.planets.find((p) => p.name === 'Sun')
   const moon = chartData.planets.find((p) => p.name === 'Moon')
   const ascendant = chartData.ascendant

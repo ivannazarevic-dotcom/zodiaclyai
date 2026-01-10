@@ -1,4 +1,4 @@
-import { openai } from './client'
+import { openai, ensureOpenAIConfigured } from './client'
 
 export type ZodiacSign =
   | 'ARIES' | 'TAURUS' | 'GEMINI' | 'CANCER'
@@ -46,6 +46,8 @@ const zodiacDates: Record<ZodiacSign, string> = {
 }
 
 export async function generateDailyHoroscope(sign: ZodiacSign): Promise<HoroscopeContent> {
+  ensureOpenAIConfigured()
+
   const signName = zodiacSignNames[sign]
   const dateRange = zodiacDates[sign]
   const today = new Date().toLocaleDateString('en-US', {
@@ -88,6 +90,8 @@ Format your response as JSON with keys: general, love, career, health, luckyNumb
 }
 
 export async function generateWeeklyHoroscope(sign: ZodiacSign): Promise<HoroscopeContent> {
+  ensureOpenAIConfigured()
+
   const signName = zodiacSignNames[sign]
   const dateRange = zodiacDates[sign]
   const startOfWeek = getStartOfWeek()
