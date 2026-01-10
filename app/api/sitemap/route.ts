@@ -26,19 +26,6 @@ export async function GET() {
     let dynamicUrls: Array<{ loc: string; priority: string; changefreq: string; lastmod?: string }> = []
 
     try {
-      // Get published blog posts
-      const blogPosts = await prisma.blogPost.findMany({
-        where: { published: true },
-        select: { slug: true, updatedAt: true },
-      })
-
-      const blogUrls = blogPosts.map((post) => ({
-        loc: `${baseUrl}/blog/${post.slug}`,
-        priority: '0.7',
-        changefreq: 'weekly',
-        lastmod: post.updatedAt.toISOString().split('T')[0],
-      }))
-
       // Get public charts
       const publicCharts = await prisma.natalChart.findMany({
         where: { isPublic: true },
@@ -53,9 +40,10 @@ export async function GET() {
         lastmod: chart.updatedAt.toISOString().split('T')[0],
       }))
 
-      dynamicUrls = [...blogUrls, ...chartUrls]
+      dynamicUrls = chartUrls
     } catch (dbError) {
       console.error('Database error in sitemap, returning static URLs only:', dbError)
+      // Continue with static URLs only
     }
 
     const allUrls = [...staticUrls, ...dynamicUrls]
