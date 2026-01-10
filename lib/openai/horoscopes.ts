@@ -130,6 +130,46 @@ Format your response as JSON with keys: general, love, career, health, money, lu
   return JSON.parse(content) as HoroscopeContent
 }
 
+export async function generateYearlyHoroscope(sign: ZodiacSign): Promise<HoroscopeContent> {
+  ensureOpenAIConfigured()
+
+  const signName = zodiacSignNames[sign]
+  const dateRange = zodiacDates[sign]
+  const currentYear = new Date().getFullYear()
+
+  const prompt = `You are a professional astrologer. Write the yearly horoscope for ${signName} (${dateRange}) for the year ${currentYear}.
+
+Provide the following sections:
+1. GENERAL: A comprehensive 4-5 sentence overview of the year's major themes, planetary transits, and transformative periods. Focus on personal growth and life direction.
+2. LOVE: 3-4 sentences about romantic relationships, emotional evolution, and important relationship milestones throughout the year
+3. CAREER: 3-4 sentences about professional development, career opportunities, major work transitions, and success periods
+4. HEALTH: 2-3 sentences about overall wellness trends, energy cycles, and self-care priorities for the year
+5. MONEY: 2-3 sentences about financial outlook, investment opportunities, and material abundance throughout the year
+6. LUCKY_NUMBER: A single number between 1-100
+7. LUCKY_COLOR: A single color name that will bring luck this year
+
+Make the tone inspirational, forward-looking, and empowering. Acknowledge challenges as opportunities for growth.
+Format your response as JSON with keys: general, love, career, health, money, luckyNumber, luckyColor`
+
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [
+      {
+        role: 'system',
+        content: `You are a professional astrologer providing yearly horoscope guidance for ${currentYear}. Always respond with valid JSON.`
+      },
+      { role: 'user', content: prompt }
+    ],
+    response_format: { type: 'json_object' },
+    max_tokens: 800,
+  })
+
+  const content = completion.choices[0].message.content
+  if (!content) throw new Error('Failed to generate yearly horoscope')
+
+  return JSON.parse(content) as HoroscopeContent
+}
+
 export async function generateAllDailyHoroscopes(): Promise<Record<ZodiacSign, HoroscopeContent>> {
   const signs: ZodiacSign[] = [
     'ARIES', 'TAURUS', 'GEMINI', 'CANCER',
@@ -160,6 +200,26 @@ export async function generateAllWeeklyHoroscopes(): Promise<Record<ZodiacSign, 
   const horoscopes = await Promise.all(
     signs.map(async (sign) => {
       const content = await generateWeeklyHoroscope(sign)
+      return { sign, content }
+    })
+  )
+
+  return horoscopes.reduce((acc, { sign, content }) => {
+    acc[sign] = content
+    return acc
+  }, {} as Record<ZodiacSign, HoroscopeContent>)
+}
+
+export async function generateAllYearlyHoroscopes(): Promise<Record<ZodiacSign, HoroscopeContent>> {
+  const signs: ZodiacSign[] = [
+    'ARIES', 'TAURUS', 'GEMINI', 'CANCER',
+    'LEO', 'VIRGO', 'LIBRA', 'SCORPIO',
+    'SAGITTARIUS', 'CAPRICORN', 'AQUARIUS', 'PISCES'
+  ]
+
+  const horoscopes = await Promise.all(
+    signs.map(async (sign) => {
+      const content = await generateYearlyHoroscope(sign)
       return { sign, content }
     })
   )

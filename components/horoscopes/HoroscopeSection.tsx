@@ -42,7 +42,7 @@ const zodiacSigns: { sign: ZodiacSign; emoji: string; name: string; dates: strin
 ]
 
 export default function HoroscopeSection() {
-  const [type, setType] = useState<'daily' | 'weekly'>('daily')
+  const [type, setType] = useState<'daily' | 'weekly' | 'yearly'>('daily')
   const [selectedSign, setSelectedSign] = useState<ZodiacSign>('ARIES')
   const [horoscope, setHoroscope] = useState<Horoscope | null>(null)
   const [loading, setLoading] = useState(false)
@@ -82,10 +82,13 @@ export default function HoroscopeSection() {
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Your {type === 'daily' ? 'Daily' : 'Weekly'} Horoscope 🔮
+            Your {type === 'daily' ? 'Daily' : type === 'weekly' ? 'Weekly' : 'Yearly'} Horoscope 🔮
           </h2>
           <p className="text-xl text-gray-400">
-            AI-powered astrological guidance for your journey
+            {type === 'yearly'
+              ? `AI-powered astrological guidance for ${new Date().getFullYear()}`
+              : 'AI-powered astrological guidance for your journey'
+            }
           </p>
         </div>
 
@@ -102,6 +105,12 @@ export default function HoroscopeSection() {
             onClick={() => setType('weekly')}
           >
             Weekly
+          </Button>
+          <Button
+            variant={type === 'yearly' ? 'primary' : 'outline'}
+            onClick={() => setType('yearly')}
+          >
+            Yearly 2026
           </Button>
         </div>
 
@@ -141,7 +150,7 @@ export default function HoroscopeSection() {
                     <h3 className="text-3xl font-bold">{selectedZodiac?.name}</h3>
                     <p className="text-gray-400">{selectedZodiac?.dates}</p>
                     <p className="text-sm text-cosmic-accent mt-1">
-                      {type === 'daily' ? 'Today' : 'This Week'} • {new Date(horoscope.date).toLocaleDateString()}
+                      {type === 'daily' ? 'Today' : type === 'weekly' ? 'This Week' : `Year ${new Date().getFullYear()}`} • {new Date(horoscope.date).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
@@ -192,8 +201,8 @@ export default function HoroscopeSection() {
               </Card>
             </div>
 
-            {/* Money (weekly only) */}
-            {type === 'weekly' && horoscope.content.money && (
+            {/* Money (weekly & yearly) */}
+            {(type === 'weekly' || type === 'yearly') && horoscope.content.money && (
               <Card>
                 <h4 className="text-xl font-bold mb-3 flex items-center gap-2 text-cosmic-gold">
                   <span>💰</span> Money & Finances

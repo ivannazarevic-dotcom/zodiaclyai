@@ -45,6 +45,7 @@ enum ZodiacSign {
 enum HoroscopeType {
   DAILY
   WEEKLY
+  YEARLY
 }
 
 model User {
