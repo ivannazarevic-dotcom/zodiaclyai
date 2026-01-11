@@ -7,6 +7,7 @@ import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Alert from '@/components/ui/Alert'
 import Badge from '@/components/ui/Badge'
+import { SessionUser } from '@/types'
 import {
   calculateNumerologyProfile,
   getNumberMeaning,
@@ -21,9 +22,7 @@ interface NumerologyResult {
 }
 
 interface NumerologyCalculatorProps {
-  user?: {
-    plan: 'FREE' | 'PRO'
-  } | null
+  user: SessionUser | null
 }
 
 export default function NumerologyCalculator({ user }: NumerologyCalculatorProps) {
