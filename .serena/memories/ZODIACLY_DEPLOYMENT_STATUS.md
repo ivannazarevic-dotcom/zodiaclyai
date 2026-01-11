@@ -56,8 +56,11 @@
 
 ### **5. Numerology**
 - ✅ Life path number calculation
-- ✅ AI interpretations
+- ✅ Expression, Soul Urge, Personality numbers
+- ✅ Birthday, Maturity, Personal Year numbers
+- ✅ AI interpretations (PRO)
 - ✅ Detailed numerology readings
+- ✅ **PDF Export (PRO)** - Complete numerology report with all numbers and AI interpretations
 
 ### **6. Compatibility Analysis**
 - ✅ Synastry chart comparison
