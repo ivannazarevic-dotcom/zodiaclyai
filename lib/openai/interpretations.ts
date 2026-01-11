@@ -29,7 +29,7 @@ async function generateFreeSummary(chartData: ChartData): Promise<AIReading> {
 Keep it inspiring and positive. Focus on core personality traits. Always complete your sentences and thoughts naturally.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
+    model: 'gpt-5-mini',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 600,
   })
@@ -82,7 +82,7 @@ async function generateOverview(chartData: ChartData): Promise<string> {
 Include their core essence, emotional nature, and life approach. Make it insightful and empowering. 3-4 paragraphs. Always complete your sentences and thoughts naturally - never cut off mid-sentence.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
+    model: 'gpt-5-mini',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 1200,
   })
@@ -104,7 +104,7 @@ ${planet.retrograde ? 'This planet is retrograde.' : ''}
 2-3 paragraphs. Focus on practical insights.`
 
       const completion = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: 'gpt-5-mini',
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 500,
       })
@@ -136,7 +136,7 @@ async function generateHouseAnalysis(
 Explain what this means for this life area. 1-2 paragraphs.`
 
       const completion = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: 'gpt-5-mini',
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 400,
       })
@@ -163,7 +163,7 @@ async function generateAspectAnalysis(
 Orb: ${aspect.orb.toFixed(1)}°. 1-2 paragraphs.`
 
       const completion = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: 'gpt-5-mini',
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 400,
       })
@@ -186,7 +186,7 @@ async function generateAscendantAnalysis(ascendant: {
 Explain how this shapes first impressions, appearance, and life approach. 2 paragraphs.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
+    model: 'gpt-5-mini',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 500,
   })

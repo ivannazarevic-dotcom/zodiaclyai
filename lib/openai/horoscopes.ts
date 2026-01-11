@@ -73,7 +73,7 @@ Always complete your sentences and thoughts naturally - never cut off mid-senten
 Format your response as JSON with keys: general, love, career, health, luckyNumber, luckyColor`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
+    model: 'gpt-5-mini',
     messages: [
       {
         role: 'system',
@@ -115,7 +115,7 @@ Always complete your sentences and thoughts naturally - never cut off mid-senten
 Format your response as JSON with keys: general, love, career, health, money, luckyNumber, luckyColor`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
+    model: 'gpt-5-mini',
     messages: [
       {
         role: 'system',
@@ -156,7 +156,7 @@ Always complete your sentences and thoughts naturally - never cut off mid-senten
 Format your response as JSON with keys: general, love, career, health, money, luckyNumber, luckyColor`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
+    model: 'gpt-5-mini',
     messages: [
       {
         role: 'system',
