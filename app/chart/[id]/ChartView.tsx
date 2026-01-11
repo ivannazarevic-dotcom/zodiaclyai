@@ -188,8 +188,8 @@ export default function ChartView({ chart, user }: ChartViewProps) {
 
       pdf.addImage(imgData, 'PNG', margin, 30, finalImgWidth, finalImgHeight)
 
-      // AI Reading Pages (if exists and user is PRO)
-      if (aiReading && user.plan === 'PRO') {
+      // AI Reading Pages (if exists)
+      if (aiReading) {
         // Overview Page
         pdf.addPage()
         pdf.setFillColor(10, 10, 31)
@@ -358,37 +358,35 @@ export default function ChartView({ chart, user }: ChartViewProps) {
           </p>
         </div>
 
-        {/* Export Buttons (PRO Only) */}
-        {user.plan === 'PRO' && (
-          <div className="flex flex-wrap gap-2">
+        {/* Export Buttons */}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={exportToPNG}
+            disabled={exporting}
+          >
+            {exporting ? 'Exporting...' : '📥 PNG'}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={exportToPDF}
+            disabled={exporting}
+          >
+            {exporting ? 'Exporting...' : '📄 Chart PDF'}
+          </Button>
+          {aiReading && (
             <Button
-              variant="outline"
+              variant="primary"
               size="sm"
-              onClick={exportToPNG}
+              onClick={exportFullPDF}
               disabled={exporting}
             >
-              {exporting ? 'Exporting...' : '📥 PNG'}
+              {exporting ? 'Generating...' : '📊 Full PDF Report'}
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={exportToPDF}
-              disabled={exporting}
-            >
-              {exporting ? 'Exporting...' : '📄 Chart PDF'}
-            </Button>
-            {aiReading && (
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={exportFullPDF}
-                disabled={exporting}
-              >
-                {exporting ? 'Generating...' : '📊 Full PDF Report'}
-              </Button>
-            )}
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {error && <Alert type="error" className="mb-6">{error}</Alert>}

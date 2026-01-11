@@ -235,8 +235,8 @@ export default function NumerologyCalculator({ user }: NumerologyCalculatorProps
         yPosition += 7
       }
 
-      // AI Interpretation Pages
-      if (user?.plan === 'PRO') {
+      // AI Interpretation Pages (if exists)
+      if (result.interpretation) {
         // Overview
         pdf.addPage()
         pdf.setFillColor(10, 10, 31)
@@ -565,26 +565,24 @@ export default function NumerologyCalculator({ user }: NumerologyCalculatorProps
             </Card>
           ) : (
             <div className="space-y-6">
-              {/* PDF Export Button (PRO Only) */}
-              {user?.plan === 'PRO' && (
-                <Card className="bg-gradient-to-r from-cosmic-primary/10 to-cosmic-secondary/10 border-cosmic-primary">
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div>
-                      <h3 className="text-lg font-bold mb-1">Download Your Complete Report</h3>
-                      <p className="text-sm text-gray-400">
-                        Save your numerology profile and AI interpretations as a beautiful PDF
-                      </p>
-                    </div>
-                    <Button
-                      onClick={exportNumerologyPDF}
-                      disabled={exporting}
-                      size="lg"
-                    >
-                      {exporting ? 'Generating...' : '📊 Full PDF Report'}
-                    </Button>
+              {/* PDF Export Button */}
+              <Card className="bg-gradient-to-r from-cosmic-primary/10 to-cosmic-secondary/10 border-cosmic-primary">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-lg font-bold mb-1">Download Your Complete Report</h3>
+                    <p className="text-sm text-gray-400">
+                      Save your numerology profile and AI interpretations as a beautiful PDF
+                    </p>
                   </div>
-                </Card>
-              )}
+                  <Button
+                    onClick={exportNumerologyPDF}
+                    disabled={exporting}
+                    size="lg"
+                  >
+                    {exporting ? 'Generating...' : '📊 Full PDF Report'}
+                  </Button>
+                </div>
+              </Card>
 
               <Card>
                 <h2 className="text-2xl font-bold mb-4">AI Overview</h2>
