@@ -114,6 +114,236 @@ export default function ChartView({ chart, user }: ChartViewProps) {
     }
   }
 
+  async function exportFullPDF() {
+    if (!chartRef.current) return
+
+    setExporting(true)
+    try {
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      })
+
+      const pageWidth = 210
+      const pageHeight = 297
+      const margin = 20
+      const contentWidth = pageWidth - (margin * 2)
+      let yPosition = margin
+
+      // Cover Page
+      pdf.setFillColor(10, 10, 31) // cosmic-dark
+      pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+
+      pdf.setTextColor(147, 51, 234) // cosmic-primary
+      pdf.setFontSize(32)
+      pdf.setFont('helvetica', 'bold')
+      pdf.text('Natal Chart Report', pageWidth / 2, 60, { align: 'center' })
+
+      pdf.setTextColor(255, 255, 255)
+      pdf.setFontSize(24)
+      pdf.text(chart.location, pageWidth / 2, 80, { align: 'center' })
+
+      pdf.setTextColor(156, 163, 175) // gray-400
+      pdf.setFontSize(14)
+      pdf.text(
+        `${new Date(chart.birthDate).toLocaleDateString()} at ${chart.birthTime}`,
+        pageWidth / 2,
+        95,
+        { align: 'center' }
+      )
+
+      pdf.setTextColor(107, 114, 128) // gray-500
+      pdf.setFontSize(10)
+      pdf.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 105, { align: 'center' })
+
+      // Add decorative stars
+      pdf.setTextColor(251, 191, 36) // cosmic-gold
+      pdf.setFontSize(20)
+      pdf.text('✨ ⭐ 🌙 ✨', pageWidth / 2, 120, { align: 'center' })
+
+      // Chart Page
+      pdf.addPage()
+      pdf.setFillColor(10, 10, 31)
+      pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+
+      pdf.setTextColor(147, 51, 234)
+      pdf.setFontSize(18)
+      pdf.setFont('helvetica', 'bold')
+      pdf.text('Natal Chart Visualization', margin, 20)
+
+      // Add chart image
+      const canvas = await html2canvas(chartRef.current, {
+        backgroundColor: '#0a0a1f',
+        scale: 2,
+        logging: false,
+      })
+
+      const imgData = canvas.toDataURL('image/png')
+      const imgWidth = contentWidth
+      const imgHeight = (canvas.height * imgWidth) / canvas.width
+      const maxImgHeight = pageHeight - 40
+      const finalImgHeight = Math.min(imgHeight, maxImgHeight)
+      const finalImgWidth = (canvas.width * finalImgHeight) / canvas.height
+
+      pdf.addImage(imgData, 'PNG', margin, 30, finalImgWidth, finalImgHeight)
+
+      // AI Reading Pages (if exists and user is PRO)
+      if (aiReading && user.plan === 'PRO') {
+        // Overview Page
+        pdf.addPage()
+        pdf.setFillColor(10, 10, 31)
+        pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+
+        yPosition = margin
+        pdf.setTextColor(147, 51, 234)
+        pdf.setFontSize(18)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text('AI Interpretation Overview', margin, yPosition)
+        yPosition += 15
+
+        pdf.setTextColor(229, 231, 235)
+        pdf.setFontSize(11)
+        pdf.setFont('helvetica', 'normal')
+        const overviewLines = pdf.splitTextToSize(aiReading.overview, contentWidth)
+        pdf.text(overviewLines, margin, yPosition)
+        yPosition += (overviewLines.length * 6) + 15
+
+        // Planet Analysis
+        if (aiReading.planetAnalysis && aiReading.planetAnalysis.length > 0) {
+          for (const analysis of aiReading.planetAnalysis) {
+            // Check if we need a new page
+            if (yPosition > pageHeight - 60) {
+              pdf.addPage()
+              pdf.setFillColor(10, 10, 31)
+              pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+              yPosition = margin
+            }
+
+            pdf.setTextColor(147, 51, 234)
+            pdf.setFontSize(14)
+            pdf.setFont('helvetica', 'bold')
+            pdf.text(analysis.planet, margin, yPosition)
+            yPosition += 8
+
+            pdf.setTextColor(229, 231, 235)
+            pdf.setFontSize(10)
+            pdf.setFont('helvetica', 'normal')
+            const planetLines = pdf.splitTextToSize(analysis.interpretation, contentWidth)
+            pdf.text(planetLines, margin, yPosition)
+            yPosition += (planetLines.length * 5) + 10
+          }
+        }
+
+        // House Analysis
+        if (aiReading.houseAnalysis && aiReading.houseAnalysis.length > 0) {
+          pdf.addPage()
+          pdf.setFillColor(10, 10, 31)
+          pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+          yPosition = margin
+
+          pdf.setTextColor(234, 88, 12) // cosmic-secondary
+          pdf.setFontSize(16)
+          pdf.setFont('helvetica', 'bold')
+          pdf.text('House Analysis', margin, yPosition)
+          yPosition += 12
+
+          for (const analysis of aiReading.houseAnalysis) {
+            if (yPosition > pageHeight - 60) {
+              pdf.addPage()
+              pdf.setFillColor(10, 10, 31)
+              pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+              yPosition = margin
+            }
+
+            pdf.setTextColor(234, 88, 12)
+            pdf.setFontSize(12)
+            pdf.setFont('helvetica', 'bold')
+            pdf.text(`${analysis.house}th House`, margin, yPosition)
+            yPosition += 7
+
+            pdf.setTextColor(229, 231, 235)
+            pdf.setFontSize(10)
+            pdf.setFont('helvetica', 'normal')
+            const houseLines = pdf.splitTextToSize(analysis.interpretation, contentWidth)
+            pdf.text(houseLines, margin, yPosition)
+            yPosition += (houseLines.length * 5) + 10
+          }
+        }
+
+        // Aspect Analysis
+        if (aiReading.aspectAnalysis && aiReading.aspectAnalysis.length > 0) {
+          pdf.addPage()
+          pdf.setFillColor(10, 10, 31)
+          pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+          yPosition = margin
+
+          pdf.setTextColor(59, 130, 246) // cosmic-accent
+          pdf.setFontSize(16)
+          pdf.setFont('helvetica', 'bold')
+          pdf.text('Major Aspects', margin, yPosition)
+          yPosition += 12
+
+          for (const analysis of aiReading.aspectAnalysis) {
+            if (yPosition > pageHeight - 60) {
+              pdf.addPage()
+              pdf.setFillColor(10, 10, 31)
+              pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+              yPosition = margin
+            }
+
+            pdf.setTextColor(59, 130, 246)
+            pdf.setFontSize(12)
+            pdf.setFont('helvetica', 'bold')
+            pdf.text(analysis.aspect, margin, yPosition)
+            yPosition += 7
+
+            pdf.setTextColor(229, 231, 235)
+            pdf.setFontSize(10)
+            pdf.setFont('helvetica', 'normal')
+            const aspectLines = pdf.splitTextToSize(analysis.interpretation, contentWidth)
+            pdf.text(aspectLines, margin, yPosition)
+            yPosition += (aspectLines.length * 5) + 10
+          }
+        }
+
+        // Ascendant Analysis
+        if (aiReading.ascendantAnalysis) {
+          pdf.addPage()
+          pdf.setFillColor(10, 10, 31)
+          pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+          yPosition = margin
+
+          pdf.setTextColor(251, 191, 36) // cosmic-gold
+          pdf.setFontSize(16)
+          pdf.setFont('helvetica', 'bold')
+          pdf.text('Ascendant Analysis', margin, yPosition)
+          yPosition += 12
+
+          pdf.setTextColor(229, 231, 235)
+          pdf.setFontSize(11)
+          pdf.setFont('helvetica', 'normal')
+          const ascendantLines = pdf.splitTextToSize(aiReading.ascendantAnalysis, contentWidth)
+          pdf.text(ascendantLines, margin, yPosition)
+        }
+
+        // Footer on last page
+        pdf.setTextColor(107, 114, 128)
+        pdf.setFontSize(8)
+        pdf.text('Generated by Zodiacly.online • AI-Powered Astrology', pageWidth / 2, pageHeight - 10, {
+          align: 'center',
+        })
+      }
+
+      pdf.save(`${chart.location.replace(/\s+/g, '-')}-full-report.pdf`)
+    } catch (err) {
+      console.error('PDF export error:', err)
+      setError('Failed to export full PDF report')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
@@ -130,14 +360,14 @@ export default function ChartView({ chart, user }: ChartViewProps) {
 
         {/* Export Buttons (PRO Only) */}
         {user.plan === 'PRO' && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={exportToPNG}
               disabled={exporting}
             >
-              {exporting ? 'Exporting...' : '📥 Export PNG'}
+              {exporting ? 'Exporting...' : '📥 PNG'}
             </Button>
             <Button
               variant="outline"
@@ -145,8 +375,18 @@ export default function ChartView({ chart, user }: ChartViewProps) {
               onClick={exportToPDF}
               disabled={exporting}
             >
-              {exporting ? 'Exporting...' : '📄 Export PDF'}
+              {exporting ? 'Exporting...' : '📄 Chart PDF'}
             </Button>
+            {aiReading && (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={exportFullPDF}
+                disabled={exporting}
+              >
+                {exporting ? 'Generating...' : '📊 Full PDF Report'}
+              </Button>
+            )}
           </div>
         )}
       </div>
