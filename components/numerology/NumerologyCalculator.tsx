@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import jsPDF from 'jspdf'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Alert from '@/components/ui/Alert'
@@ -33,6 +34,7 @@ export default function NumerologyCalculator({ user }: NumerologyCalculatorProps
   const [error, setError] = useState('')
   const [calculating, setCalculating] = useState(false)
   const [generatingAI, setGeneratingAI] = useState(false)
+  const [exporting, setExporting] = useState(false)
 
   function handleCalculate(e: React.FormEvent) {
     e.preventDefault()
@@ -113,6 +115,252 @@ export default function NumerologyCalculator({ user }: NumerologyCalculatorProps
       setError('An error occurred. Please try again.')
     } finally {
       setGeneratingAI(false)
+    }
+  }
+
+  async function exportNumerologyPDF() {
+    if (!result || !result.interpretation) return
+
+    setExporting(true)
+    try {
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      })
+
+      const pageWidth = 210
+      const pageHeight = 297
+      const margin = 20
+      const contentWidth = pageWidth - (margin * 2)
+      let yPosition = margin
+
+      // Cover Page
+      pdf.setFillColor(10, 10, 31)
+      pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+
+      pdf.setTextColor(147, 51, 234) // cosmic-primary
+      pdf.setFontSize(32)
+      pdf.setFont('helvetica', 'bold')
+      pdf.text('Numerology Report', pageWidth / 2, 60, { align: 'center' })
+
+      pdf.setTextColor(255, 255, 255)
+      pdf.setFontSize(24)
+      pdf.text(result.fullName, pageWidth / 2, 80, { align: 'center' })
+
+      pdf.setTextColor(156, 163, 175)
+      pdf.setFontSize(14)
+      pdf.text(
+        result.birthDate.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric'
+        }),
+        pageWidth / 2,
+        95,
+        { align: 'center' }
+      )
+
+      pdf.setTextColor(107, 114, 128)
+      pdf.setFontSize(10)
+      pdf.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 105, { align: 'center' })
+
+      // Decorative numbers
+      pdf.setTextColor(251, 191, 36)
+      pdf.setFontSize(20)
+      pdf.text('1  2  3  4  5  6  7  8  9', pageWidth / 2, 120, { align: 'center' })
+
+      // Core Numbers Page
+      pdf.addPage()
+      pdf.setFillColor(10, 10, 31)
+      pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+      yPosition = margin
+
+      pdf.setTextColor(147, 51, 234)
+      pdf.setFontSize(18)
+      pdf.setFont('helvetica', 'bold')
+      pdf.text('Your Core Numbers', margin, yPosition)
+      yPosition += 15
+
+      const coreNumbers = [
+        { title: 'Life Path Number', value: result.profile.lifePathNumber, meaning: getNumberMeaning(result.profile.lifePathNumber), color: [147, 51, 234] },
+        { title: 'Expression Number', value: result.profile.expressionNumber, meaning: getNumberMeaning(result.profile.expressionNumber), color: [234, 88, 12] },
+        { title: 'Soul Urge Number', value: result.profile.soulUrgeNumber, meaning: getNumberMeaning(result.profile.soulUrgeNumber), color: [59, 130, 246] },
+        { title: 'Personality Number', value: result.profile.personalityNumber, meaning: getNumberMeaning(result.profile.personalityNumber), color: [251, 191, 36] }
+      ]
+
+      for (const num of coreNumbers) {
+        if (yPosition > pageHeight - 50) {
+          pdf.addPage()
+          pdf.setFillColor(10, 10, 31)
+          pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+          yPosition = margin
+        }
+
+        pdf.setTextColor(...num.color)
+        pdf.setFontSize(14)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text(`${num.title}: ${num.value}`, margin, yPosition)
+        yPosition += 8
+
+        pdf.setTextColor(229, 231, 235)
+        pdf.setFontSize(12)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text(num.meaning.title, margin, yPosition)
+        yPosition += 6
+
+        pdf.setFontSize(9)
+        pdf.setFont('helvetica', 'normal')
+        pdf.text(num.meaning.keywords.join(' • '), margin, yPosition)
+        yPosition += 10
+      }
+
+      // Additional Numbers
+      yPosition += 10
+      pdf.setTextColor(147, 51, 234)
+      pdf.setFontSize(16)
+      pdf.setFont('helvetica', 'bold')
+      pdf.text('Additional Insights', margin, yPosition)
+      yPosition += 10
+
+      const additionalNumbers = [
+        { title: 'Birthday Number', value: result.profile.birthdayNumber },
+        { title: 'Maturity Number', value: result.profile.maturityNumber },
+        { title: `Personal Year ${new Date().getFullYear()}`, value: result.profile.personalYearNumber }
+      ]
+
+      pdf.setTextColor(229, 231, 235)
+      pdf.setFontSize(11)
+      for (const num of additionalNumbers) {
+        pdf.text(`${num.title}: ${num.value}`, margin, yPosition)
+        yPosition += 7
+      }
+
+      // AI Interpretation Pages
+      if (user?.plan === 'PRO') {
+        // Overview
+        pdf.addPage()
+        pdf.setFillColor(10, 10, 31)
+        pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+        yPosition = margin
+
+        pdf.setTextColor(147, 51, 234)
+        pdf.setFontSize(18)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text('AI Overview', margin, yPosition)
+        yPosition += 12
+
+        pdf.setTextColor(229, 231, 235)
+        pdf.setFontSize(11)
+        pdf.setFont('helvetica', 'normal')
+        const overviewLines = pdf.splitTextToSize(result.interpretation.overview, contentWidth)
+        pdf.text(overviewLines, margin, yPosition)
+        yPosition += (overviewLines.length * 6) + 15
+
+        // Life Path Interpretation
+        pdf.addPage()
+        pdf.setFillColor(10, 10, 31)
+        pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+        yPosition = margin
+
+        pdf.setTextColor(147, 51, 234)
+        pdf.setFontSize(16)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text('Life Path Interpretation', margin, yPosition)
+        yPosition += 12
+
+        pdf.setTextColor(229, 231, 235)
+        pdf.setFontSize(10)
+        pdf.setFont('helvetica', 'normal')
+        const lifePathLines = pdf.splitTextToSize(result.interpretation.lifePathInterpretation, contentWidth)
+        pdf.text(lifePathLines, margin, yPosition)
+
+        // Expression Interpretation
+        pdf.addPage()
+        pdf.setFillColor(10, 10, 31)
+        pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+        yPosition = margin
+
+        pdf.setTextColor(234, 88, 12)
+        pdf.setFontSize(16)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text('Expression Number Interpretation', margin, yPosition)
+        yPosition += 12
+
+        pdf.setTextColor(229, 231, 235)
+        pdf.setFontSize(10)
+        pdf.setFont('helvetica', 'normal')
+        const expressionLines = pdf.splitTextToSize(result.interpretation.expressionInterpretation, contentWidth)
+        pdf.text(expressionLines, margin, yPosition)
+
+        // Soul Urge Interpretation
+        pdf.addPage()
+        pdf.setFillColor(10, 10, 31)
+        pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+        yPosition = margin
+
+        pdf.setTextColor(59, 130, 246)
+        pdf.setFontSize(16)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text('Soul Urge Interpretation', margin, yPosition)
+        yPosition += 12
+
+        pdf.setTextColor(229, 231, 235)
+        pdf.setFontSize(10)
+        pdf.setFont('helvetica', 'normal')
+        const soulUrgeLines = pdf.splitTextToSize(result.interpretation.soulUrgeInterpretation, contentWidth)
+        pdf.text(soulUrgeLines, margin, yPosition)
+
+        // Personality Interpretation
+        pdf.addPage()
+        pdf.setFillColor(10, 10, 31)
+        pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+        yPosition = margin
+
+        pdf.setTextColor(251, 191, 36)
+        pdf.setFontSize(16)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text('Personality Interpretation', margin, yPosition)
+        yPosition += 12
+
+        pdf.setTextColor(229, 231, 235)
+        pdf.setFontSize(10)
+        pdf.setFont('helvetica', 'normal')
+        const personalityLines = pdf.splitTextToSize(result.interpretation.personalityInterpretation, contentWidth)
+        pdf.text(personalityLines, margin, yPosition)
+
+        // Personal Year Interpretation
+        pdf.addPage()
+        pdf.setFillColor(10, 10, 31)
+        pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+        yPosition = margin
+
+        pdf.setTextColor(147, 51, 234)
+        pdf.setFontSize(16)
+        pdf.setFont('helvetica', 'bold')
+        pdf.text(`Personal Year ${new Date().getFullYear()}`, margin, yPosition)
+        yPosition += 12
+
+        pdf.setTextColor(229, 231, 235)
+        pdf.setFontSize(10)
+        pdf.setFont('helvetica', 'normal')
+        const personalYearLines = pdf.splitTextToSize(result.interpretation.personalYearInterpretation, contentWidth)
+        pdf.text(personalYearLines, margin, yPosition)
+
+        // Footer on last page
+        pdf.setTextColor(107, 114, 128)
+        pdf.setFontSize(8)
+        pdf.text('Generated by Zodiacly.online • AI-Powered Numerology', pageWidth / 2, pageHeight - 10, {
+          align: 'center',
+        })
+      }
+
+      pdf.save(`${result.fullName.replace(/\s+/g, '-')}-numerology-report.pdf`)
+    } catch (err) {
+      console.error('PDF export error:', err)
+      setError('Failed to export PDF report')
+    } finally {
+      setExporting(false)
     }
   }
 
@@ -318,6 +566,27 @@ export default function NumerologyCalculator({ user }: NumerologyCalculatorProps
             </Card>
           ) : (
             <div className="space-y-6">
+              {/* PDF Export Button (PRO Only) */}
+              {user?.plan === 'PRO' && (
+                <Card className="bg-gradient-to-r from-cosmic-primary/10 to-cosmic-secondary/10 border-cosmic-primary">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                      <h3 className="text-lg font-bold mb-1">Download Your Complete Report</h3>
+                      <p className="text-sm text-gray-400">
+                        Save your numerology profile and AI interpretations as a beautiful PDF
+                      </p>
+                    </div>
+                    <Button
+                      onClick={exportNumerologyPDF}
+                      disabled={exporting}
+                      size="lg"
+                    >
+                      {exporting ? 'Generating...' : '📊 Full PDF Report'}
+                    </Button>
+                  </div>
+                </Card>
+              )}
+
               <Card>
                 <h2 className="text-2xl font-bold mb-4">AI Overview</h2>
                 <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
