@@ -68,10 +68,12 @@ Provide the following sections:
 6. LUCKY_COLOR: A single color name
 
 Keep the tone positive, insightful, and empowering. Be specific but not overly prescriptive.
+Always complete your sentences and thoughts naturally - never cut off mid-sentence.
+Always complete your sentences and thoughts naturally - never cut off mid-sentence.
 Format your response as JSON with keys: general, love, career, health, luckyNumber, luckyColor`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'gpt-4o',
     messages: [
       {
         role: 'system',
@@ -109,10 +111,11 @@ Provide the following sections:
 7. LUCKY_COLOR: A single color name
 
 Keep the tone positive, insightful, and empowering. Mention potential challenges but focus on opportunities.
+Always complete your sentences and thoughts naturally - never cut off mid-sentence.
 Format your response as JSON with keys: general, love, career, health, money, luckyNumber, luckyColor`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'gpt-4o',
     messages: [
       {
         role: 'system',
@@ -149,10 +152,11 @@ Provide the following sections:
 7. LUCKY_COLOR: A single color name that will bring luck this year
 
 Make the tone inspirational, forward-looking, and empowering. Acknowledge challenges as opportunities for growth.
+Always complete your sentences and thoughts naturally - never cut off mid-sentence.
 Format your response as JSON with keys: general, love, career, health, money, luckyNumber, luckyColor`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'gpt-4o',
     messages: [
       {
         role: 'system',

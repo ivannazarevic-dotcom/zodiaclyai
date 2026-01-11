@@ -36,7 +36,7 @@ async function generateFreeNumerologyOverview(
 Keep it inspiring and insightful. Focus on core personality traits.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'gpt-4o',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 600,
   })
@@ -96,10 +96,10 @@ async function generateOverview(
 - Life Path Number ${profile.lifePathNumber} (${lifePathMeaning.title})
 - Expression Number ${profile.expressionNumber} (${expressionMeaning.title})
 
-Include their core essence, life purpose, and natural talents. Make it insightful and empowering. 3-4 paragraphs.`
+Include their core essence, life purpose, and natural talents. Make it insightful and empowering. 3-4 paragraphs. Always complete your sentences and thoughts naturally - never cut off mid-sentence.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'gpt-4o',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 1200,
   })
@@ -118,10 +118,10 @@ Explain what this number reveals about:
 - Challenges to overcome
 - Career paths that suit them
 
-2-3 paragraphs. Be specific and actionable.`
+2-3 paragraphs. Be specific and actionable. Always complete your sentences and thoughts naturally - never cut off mid-sentence.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'gpt-4o',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 400,
   })
@@ -140,10 +140,10 @@ Explain:
 - What they're meant to do in life
 - Gifts they bring to the world
 
-2 paragraphs.`
+2 paragraphs. Always complete your sentences and thoughts naturally - never cut off mid-sentence.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'gpt-4o',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 400,
   })
@@ -162,10 +162,10 @@ Explain:
 - Heart's deepest wishes
 - What drives them from within
 
-2 paragraphs.`
+2 paragraphs. Always complete your sentences and thoughts naturally - never cut off mid-sentence.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'gpt-4o',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 400,
   })
@@ -184,10 +184,10 @@ Explain:
 - Social persona and mask
 - Outer personality traits
 
-2 paragraphs.`
+2 paragraphs. Always complete your sentences and thoughts naturally - never cut off mid-sentence.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'gpt-4o',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 400,
   })
@@ -207,10 +207,10 @@ Explain:
 - What to focus on
 - Advice for making the most of this year
 
-2 paragraphs.`
+2 paragraphs. Always complete your sentences and thoughts naturally - never cut off mid-sentence.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'gpt-4o',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 400,
   })
