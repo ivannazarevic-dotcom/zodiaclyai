@@ -42,6 +42,10 @@
 - ✅ Chart saving & management
 - ✅ Public chart sharing
 - ✅ Chart visualization
+- ✅ **PDF Export:**
+  - PNG export (chart visualization only)
+  - Chart PDF export (chart only)
+  - **Full PDF Report (PRO)** - Chart + Complete AI reading with all analyses
 
 ### **4. Horoscopes**
 - ✅ Daily horoscopes (AI-generated)
