@@ -80,7 +80,7 @@ Format your response as JSON with keys: general, love, career, health, luckyNumb
       { role: 'user', content: prompt }
     ],
     response_format: { type: 'json_object' },
-    max_tokens: 400,
+    max_tokens: 700,
   })
 
   const content = completion.choices[0].message.content
@@ -121,7 +121,7 @@ Format your response as JSON with keys: general, love, career, health, money, lu
       { role: 'user', content: prompt }
     ],
     response_format: { type: 'json_object' },
-    max_tokens: 600,
+    max_tokens: 900,
   })
 
   const content = completion.choices[0].message.content
@@ -161,7 +161,7 @@ Format your response as JSON with keys: general, love, career, health, money, lu
       { role: 'user', content: prompt }
     ],
     response_format: { type: 'json_object' },
-    max_tokens: 800,
+    max_tokens: 1400,
   })
 
   const content = completion.choices[0].message.content

@@ -38,7 +38,7 @@ Keep it inspiring and insightful. Focus on core personality traits.`
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
-    max_tokens: 200,
+    max_tokens: 600,
   })
 
   const overview = completion.choices[0].message.content || 'Unable to generate reading.'
@@ -101,7 +101,7 @@ Include their core essence, life purpose, and natural talents. Make it insightfu
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
-    max_tokens: 500,
+    max_tokens: 1200,
   })
 
   return completion.choices[0].message.content || ''
@@ -123,7 +123,7 @@ Explain what this number reveals about:
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
-    max_tokens: 300,
+    max_tokens: 400,
   })
 
   return completion.choices[0].message.content || ''
@@ -145,7 +145,7 @@ Explain:
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
-    max_tokens: 250,
+    max_tokens: 400,
   })
 
   return completion.choices[0].message.content || ''
@@ -167,7 +167,7 @@ Explain:
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
-    max_tokens: 250,
+    max_tokens: 400,
   })
 
   return completion.choices[0].message.content || ''
@@ -189,7 +189,7 @@ Explain:
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
-    max_tokens: 250,
+    max_tokens: 400,
   })
 
   return completion.choices[0].message.content || ''
@@ -212,7 +212,7 @@ Explain:
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
-    max_tokens: 250,
+    max_tokens: 400,
   })
 
   return completion.choices[0].message.content || ''

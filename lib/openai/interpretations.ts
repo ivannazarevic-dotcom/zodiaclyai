@@ -31,7 +31,7 @@ Keep it inspiring and positive. Focus on core personality traits.`
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
-    max_tokens: 200,
+    max_tokens: 600,
   })
 
   const overview = completion.choices[0].message.content || 'Unable to generate reading.'
@@ -84,7 +84,7 @@ Include their core essence, emotional nature, and life approach. Make it insight
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
-    max_tokens: 500,
+    max_tokens: 1200,
   })
 
   return completion.choices[0].message.content || ''
@@ -106,7 +106,7 @@ ${planet.retrograde ? 'This planet is retrograde.' : ''}
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
-        max_tokens: 300,
+        max_tokens: 500,
       })
 
       return {
@@ -138,7 +138,7 @@ Explain what this means for this life area. 1-2 paragraphs.`
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
-        max_tokens: 250,
+        max_tokens: 400,
       })
 
       return {
@@ -165,7 +165,7 @@ Orb: ${aspect.orb.toFixed(1)}°. 1-2 paragraphs.`
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
-        max_tokens: 200,
+        max_tokens: 400,
       })
 
       return {
@@ -188,7 +188,7 @@ Explain how this shapes first impressions, appearance, and life approach. 2 para
   const completion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
-    max_tokens: 300,
+    max_tokens: 500,
   })
 
   return completion.choices[0].message.content || ''
