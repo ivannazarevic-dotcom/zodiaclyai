@@ -196,7 +196,8 @@ export default function NumerologyCalculator({ user }: NumerologyCalculatorProps
           yPosition = margin
         }
 
-        pdf.setTextColor(...num.color)
+        const [r, g, b] = num.color
+        pdf.setTextColor(r, g, b)
         pdf.setFontSize(14)
         pdf.setFont('helvetica', 'bold')
         pdf.text(`${num.title}: ${num.value}`, margin, yPosition)
