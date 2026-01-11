@@ -36,7 +36,7 @@ async function generateFreeNumerologyOverview(
 Keep it inspiring and insightful. Focus on core personality traits.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-5-mini',
+    model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 600,
   })
@@ -99,7 +99,7 @@ async function generateOverview(
 Include their core essence, life purpose, and natural talents. Make it insightful and empowering. 3-4 paragraphs. Always complete your sentences and thoughts naturally - never cut off mid-sentence.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-5-mini',
+    model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 1200,
   })
@@ -121,7 +121,7 @@ Explain what this number reveals about:
 2-3 paragraphs. Be specific and actionable. Always complete your sentences and thoughts naturally - never cut off mid-sentence.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-5-mini',
+    model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 400,
   })
@@ -143,7 +143,7 @@ Explain:
 2 paragraphs. Always complete your sentences and thoughts naturally - never cut off mid-sentence.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-5-mini',
+    model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 400,
   })
@@ -165,7 +165,7 @@ Explain:
 2 paragraphs. Always complete your sentences and thoughts naturally - never cut off mid-sentence.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-5-mini',
+    model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 400,
   })
@@ -187,7 +187,7 @@ Explain:
 2 paragraphs. Always complete your sentences and thoughts naturally - never cut off mid-sentence.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-5-mini',
+    model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 400,
   })
@@ -210,7 +210,7 @@ Explain:
 2 paragraphs. Always complete your sentences and thoughts naturally - never cut off mid-sentence.`
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-5-mini',
+    model: 'gpt-4o-mini',
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 400,
   })
