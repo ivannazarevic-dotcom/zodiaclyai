@@ -46,7 +46,7 @@ export async function GET() {
       // Continue with static URLs only
     }
 
-    const allUrls = [...staticUrls, ...dynamicUrls]
+    const allUrls: Array<{ loc: string; priority: string; changefreq: string; lastmod?: string }> = [...staticUrls, ...dynamicUrls]
 
     // Generate XML
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
