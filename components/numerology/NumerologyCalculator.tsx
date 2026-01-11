@@ -183,10 +183,10 @@ export default function NumerologyCalculator({ user }: NumerologyCalculatorProps
       yPosition += 15
 
       const coreNumbers = [
-        { title: 'Life Path Number', value: result.profile.lifePathNumber, meaning: getNumberMeaning(result.profile.lifePathNumber), color: [147, 51, 234] },
-        { title: 'Expression Number', value: result.profile.expressionNumber, meaning: getNumberMeaning(result.profile.expressionNumber), color: [234, 88, 12] },
-        { title: 'Soul Urge Number', value: result.profile.soulUrgeNumber, meaning: getNumberMeaning(result.profile.soulUrgeNumber), color: [59, 130, 246] },
-        { title: 'Personality Number', value: result.profile.personalityNumber, meaning: getNumberMeaning(result.profile.personalityNumber), color: [251, 191, 36] }
+        { title: 'Life Path Number', value: result.profile.lifePathNumber, meaning: getNumberMeaning(result.profile.lifePathNumber), color: [147, 51, 234] as const },
+        { title: 'Expression Number', value: result.profile.expressionNumber, meaning: getNumberMeaning(result.profile.expressionNumber), color: [234, 88, 12] as const },
+        { title: 'Soul Urge Number', value: result.profile.soulUrgeNumber, meaning: getNumberMeaning(result.profile.soulUrgeNumber), color: [59, 130, 246] as const },
+        { title: 'Personality Number', value: result.profile.personalityNumber, meaning: getNumberMeaning(result.profile.personalityNumber), color: [251, 191, 36] as const }
       ]
 
       for (const num of coreNumbers) {
